@@ -1,0 +1,10 @@
+{
+  "appId": "ai.dwelco.app",
+  "appName": "dc1",
+  "webDir": "dist",
+  "plugins": {
+    "SplashScreen": {
+      "launchAutoHide": false
+    }
+  }
+}
