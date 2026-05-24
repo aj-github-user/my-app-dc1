@@ -1,0 +1,14 @@
+{
+  "name": "dwelco-web-server",
+  "version": "1.0.0",
+  "description": "Simple web server to manage FCM tokens and send push notifications",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "firebase-admin": "^12.0.0",
+    "body-parser": "^1.20.2"
+  }
+}
