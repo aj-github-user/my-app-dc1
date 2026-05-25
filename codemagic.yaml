@@ -10,7 +10,6 @@ workflows:
       - npm install
       - npm run build
       - npx cap sync ios
-      - cd ios/App && pod install
 
       - xcode-project build-ipa \
           --workspace ios/App/App.xcworkspace \
