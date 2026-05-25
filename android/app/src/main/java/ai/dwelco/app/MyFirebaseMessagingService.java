@@ -1,4 +1,4 @@
-package ai.dwelco.ai;
+package ai.dwelco.app;
 
 import android.app.NotificationChannel;
 import android.app.NotificationManager;

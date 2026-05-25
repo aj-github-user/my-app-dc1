@@ -1,18 +1,13 @@
-package ai.dwelco.ai;
+package ai.dwelco.app;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
-import android.webkit.CookieManager;
-import android.webkit.WebChromeClient;
-import android.webkit.WebSettings;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import com.getcapacitor.BridgeActivity;
 import com.google.firebase.messaging.FirebaseMessaging;
 
 import okhttp3.Call;
@@ -24,23 +19,17 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 import java.io.IOException;
 
-public class AppBrowserActivity extends AppCompatActivity {
+public class MainActivity extends BridgeActivity {
 
-    private WebView webView;
     private static final int NOTIFICATION_PERMISSION_CODE = 123;
     private final OkHttpClient client = new OkHttpClient();
     private static final String SERVER_URL = "http://10.0.2.2:3000/register-token";
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         
-        webView = new WebView(this);
-        setContentView(webView);
-
-        setupWebView();
-        webView.loadUrl("https://app.dwelco.ai");
-
+        // Push notification plumbing
         requestNotificationPermission();
         createNotificationChannel();
         getAndLogFCMToken();
@@ -79,7 +68,7 @@ public class AppBrowserActivity extends AppCompatActivity {
                     String token = task.getResult();
                     Log.d("FCM", "FCM Token: " + token);
                     
-                    // For demonstration, we use the device model + a snippet of Android ID as the userId
+                    // Identify the user
                     String androidId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
                     String userId = android.os.Build.MODEL + "_" + (androidId != null ? androidId.substring(0, 4) : "dev");
                     
@@ -92,7 +81,6 @@ public class AppBrowserActivity extends AppCompatActivity {
 
     private void sendTokenToServer(String token, String userId) {
         MediaType JSON = MediaType.get("application/json; charset=utf-8");
-        // Create JSON payload with both token and userId
         String json = "{\"token\":\"" + token + "\", \"userId\":\"" + userId + "\"}";
         
         RequestBody body = RequestBody.create(json, JSON);
@@ -116,41 +104,5 @@ public class AppBrowserActivity extends AppCompatActivity {
                 }
             }
         });
-    }
-
-    private void setupWebView() {
-        WebSettings webSettings = webView.getSettings();
-        
-        webSettings.setJavaScriptEnabled(true);
-        webSettings.setDomStorageEnabled(true);
-        webSettings.setDatabaseEnabled(true);
-        
-        webSettings.setUseWideViewPort(true);
-        webSettings.setLoadWithOverviewMode(true);
-
-        CookieManager cookieManager = CookieManager.getInstance();
-        cookieManager.setAcceptCookie(true);
-        cookieManager.setAcceptThirdPartyCookies(webView, true);
-        
-        webView.setWebViewClient(new WebViewClient());
-        
-        webView.setWebChromeClient(new WebChromeClient() {
-            @Override
-            public boolean onConsoleMessage(android.webkit.ConsoleMessage consoleMessage) {
-                Log.d("WebViewConsole", consoleMessage.message() + " -- From line "
-                        + consoleMessage.lineNumber() + " of "
-                        + consoleMessage.sourceId());
-                return true;
-            }
-        });
-    }
-
-    @Override
-    public void onBackPressed() {
-        if (webView.canGoBack()) {
-            webView.goBack();
-        } else {
-            super.onBackPressed();
-        }
     }
 }
