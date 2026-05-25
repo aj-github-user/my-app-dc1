@@ -1,6 +1,6 @@
 workflows:
-  ios-workflow:
-    name: iOS Workflow
+  ios-simulator-workflow:
+    name: iOS Simulator Build for Appetize
 
     environment:
       node: latest
@@ -19,33 +19,22 @@ workflows:
         script: |
           npx cap sync ios
 
-      - name: List iOS files
+      - name: Build iOS simulator app
         script: |
-          find ios -maxdepth 3 -type f
-          find ios -maxdepth 3 -type d
+          xcodebuild \
+            -project ios/App/App.xcodeproj \
+            -scheme App \
+            -configuration Debug \
+            -sdk iphonesimulator \
+            -derivedDataPath build/ios/simulator \
+            CODE_SIGNING_ALLOWED=NO \
+            build
 
-      - name: Create export options
+      - name: Zip simulator app
         script: |
-          cat > /Users/builder/export_options.plist <<EOF
-          <?xml version="1.0" encoding="UTF-8"?>
-          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-          <plist version="1.0">
-          <dict>
-            <key>method</key>
-            <string>development</string>
-
-            <key>signingStyle</key>
-            <string>automatic</string>
-          </dict>
-          </plist>
-          EOF
-
-      - name: Build IPA
-        script: |
-          xcode-project build-ipa \
-            --project ios/App/App.xcodeproj \
-            --scheme App \
-            --export-options-plist /Users/builder/export_options.plist
+          APP_PATH=$(find build/ios/simulator/Build/Products -name "*.app" -type d | head -n 1)
+          echo "Found app at: $APP_PATH"
+          ditto -c -k --sequesterRsrc --keepParent "$APP_PATH" build/ios/AppetizeSimulatorApp.zip
 
     artifacts:
-      - build/ios/ipa/*.ipa
+      - build/ios/AppetizeSimulatorApp.zip
