@@ -1,4 +1,4 @@
-package ai.dwelco.app;
+package ai.arjdwelco.app;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
@@ -14,10 +14,21 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import com.google.firebase.messaging.FirebaseMessaging;
 
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
+import java.io.IOException;
+
 public class AppBrowserActivity extends AppCompatActivity {
 
     private WebView webView;
     private static final int NOTIFICATION_PERMISSION_CODE = 123;
+    private final OkHttpClient client = new OkHttpClient();
+    private static final String SERVER_URL = "http://10.0.2.2:3000/register-token";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,7 +41,7 @@ public class AppBrowserActivity extends AppCompatActivity {
         webView.loadUrl("https://app.dwelco.ai");
 
         requestNotificationPermission();
-        createNotificationChannel(); // Add this line
+        createNotificationChannel();
         getAndLogFCMToken();
     }
 
@@ -66,10 +77,37 @@ public class AppBrowserActivity extends AppCompatActivity {
                     }
                     String token = task.getResult();
                     Log.d("FCM", "FCM Token: " + token);
+                    sendTokenToServer(token);
                 });
         } catch (Exception e) {
             Log.e("FCM", "Firebase not initialized. Make sure google-services.json is present.", e);
         }
+    }
+
+    private void sendTokenToServer(String token) {
+        MediaType JSON = MediaType.get("application/json; charset=utf-8");
+        String json = "{\"token\":\"" + token + "\"}";
+        RequestBody body = RequestBody.create(json, JSON);
+        Request request = new Request.Builder()
+                .url(SERVER_URL)
+                .post(body)
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.e("ServerLink", "Failed to send token to server", e);
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if (response.isSuccessful()) {
+                    Log.d("ServerLink", "Token successfully registered with web server");
+                } else {
+                    Log.w("ServerLink", "Server rejected token: " + response.code());
+                }
+            }
+        });
     }
 
     private void setupWebView() {

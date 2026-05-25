@@ -1,4 +1,4 @@
-package ai.dwelco.app;
+package ai.arjdwelco.app;
 
 import com.getcapacitor.BridgeActivity;
 
