@@ -1,4 +1,4 @@
-package ai.arjdwelco.app;
+package ai.dwelco.ai;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
