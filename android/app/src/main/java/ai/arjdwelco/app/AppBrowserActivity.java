@@ -3,6 +3,7 @@ package ai.arjdwelco.app;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
 import android.webkit.CookieManager;
 import android.webkit.WebChromeClient;
@@ -77,16 +78,23 @@ public class AppBrowserActivity extends AppCompatActivity {
                     }
                     String token = task.getResult();
                     Log.d("FCM", "FCM Token: " + token);
-                    sendTokenToServer(token);
+                    
+                    // For demonstration, we use the device model + a snippet of Android ID as the userId
+                    String androidId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+                    String userId = android.os.Build.MODEL + "_" + (androidId != null ? androidId.substring(0, 4) : "dev");
+                    
+                    sendTokenToServer(token, userId);
                 });
         } catch (Exception e) {
             Log.e("FCM", "Firebase not initialized. Make sure google-services.json is present.", e);
         }
     }
 
-    private void sendTokenToServer(String token) {
+    private void sendTokenToServer(String token, String userId) {
         MediaType JSON = MediaType.get("application/json; charset=utf-8");
-        String json = "{\"token\":\"" + token + "\"}";
+        // Create JSON payload with both token and userId
+        String json = "{\"token\":\"" + token + "\", \"userId\":\"" + userId + "\"}";
+        
         RequestBody body = RequestBody.create(json, JSON);
         Request request = new Request.Builder()
                 .url(SERVER_URL)
@@ -102,7 +110,7 @@ public class AppBrowserActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 if (response.isSuccessful()) {
-                    Log.d("ServerLink", "Token successfully registered with web server");
+                    Log.d("ServerLink", "Registered as user: " + userId);
                 } else {
                     Log.w("ServerLink", "Server rejected token: " + response.code());
                 }

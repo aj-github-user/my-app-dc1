@@ -7,28 +7,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:54540402685:android:341ce46fe21d30decee394",
-        "android_client_info": {
-          "package_name": "ai.arjdwelco.app"
-        }
-      },
-      "oauth_client": [],
-      "api_key": [
-        {
-          "current_key": "AIzaSyA_AZ7ef6cQS-sNkY7E6dE-IKjhwwKz8v0"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": []
-        }
-      }
-    },
-    {
-      "client_info": {
         "mobilesdk_app_id": "1:54540402685:android:61ca63cb168c2eefcee394",
         "android_client_info": {
-          "package_name": "ai.dwelco.app"
+          "package_name": "ai.arjdwelco.app"
         }
       },
       "oauth_client": [],
