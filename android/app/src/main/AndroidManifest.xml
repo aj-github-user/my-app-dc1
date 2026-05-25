@@ -11,19 +11,7 @@
         android:usesCleartextTraffic="true"
         android:theme="@style/AppTheme">
 
-        <!-- New Main Screen: Native Browser Control -->
-        <activity
-            android:name=".AppBrowserActivity"
-            android:label="Dwelco AI"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-
-        <!-- Existing Capacitor Page (Now in Reserve) -->
+        <!-- Capacitor Main Screen (Configured via capacitor.config.json to load remote URL) -->
         <activity
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale|smallestScreenSize|screenLayout|uiMode|navigation|density"
             android:name=".MainActivity"
@@ -31,7 +19,18 @@
             android:theme="@style/AppTheme.NoActionBarLaunch"
             android:launchMode="singleTask"
             android:exported="true">
-            <!-- Launcher filter removed, but activity remains in the app -->
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <!-- Native Browser Control (Now in reserve) -->
+        <activity
+            android:name=".AppBrowserActivity"
+            android:label="Dwelco AI"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            android:exported="true">
         </activity>
 
         <!-- Firebase Messaging Service -->

@@ -2,6 +2,10 @@
   "appId": "ai.arjdwelco.app",
   "appName": "dc1",
   "webDir": "dist",
+  "server": {
+    "url": "https://app.dwelco.ai",
+    "cleartext": true
+  },
   "plugins": {
     "SplashScreen": {
       "launchAutoHide": false
