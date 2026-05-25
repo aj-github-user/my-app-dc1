@@ -7,20 +7,45 @@ workflows:
       xcode: latest
 
     scripts:
-      - npm install
-      - npm run build
-      - npx cap sync ios
+      - name: Install dependencies
+        script: |
+          npm install
+
+      - name: Build web app
+        script: |
+          npm run build
+
+      - name: Sync Capacitor iOS
+        script: |
+          npx cap sync ios
 
       - name: List iOS files
         script: |
           find ios -maxdepth 3 -type f
           find ios -maxdepth 3 -type d
 
+      - name: Create export options
+        script: |
+          cat > /Users/builder/export_options.plist <<EOF
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0">
+          <dict>
+            <key>method</key>
+            <string>development</string>
+
+            <key>signingStyle</key>
+            <string>automatic</string>
+          </dict>
+          </plist>
+          EOF
+
       - name: Build IPA
         script: |
           xcode-project build-ipa \
             --project ios/App/App.xcodeproj \
-            --scheme App
+            --scheme App \
+            --export-options-plist /Users/builder/export_options.plist
 
     artifacts:
       - build/ios/ipa/*.ipa
