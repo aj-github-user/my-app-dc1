@@ -29,7 +29,7 @@ public class AppBrowserActivity extends AppCompatActivity {
     private WebView webView;
     private static final int NOTIFICATION_PERMISSION_CODE = 123;
     private final OkHttpClient client = new OkHttpClient();
-    private static final String SERVER_URL = "http://10.0.2.2:3000/register-token";
+    private static final String SERVER_URL = "http://192.168.0.14:3000/register-token";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
